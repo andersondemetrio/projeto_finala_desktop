@@ -41,23 +41,73 @@ class StatusTableWidgetItem(QTableWidgetItem):
     def __lt__(self, other):
         # Personaliza a ordenação para exibir corretamente o campo de "Status"
         return self.text() < other.text()
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+
+class TelaBoasVindas(QDialog):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Boas-vindas")
+        self.setModal(True)
+
+        layout = QVBoxLayout()
+
+        label_titulo = QLabel("Bem-vindo(a) à aplicação de Projetos!")
+        label_titulo.setObjectName("titulo")
+        label_titulo.setAlignment(Qt.AlignCenter)  # Alinha ao centro horizontalmente
+        layout.addWidget(label_titulo)
+
+        label_descricao = QLabel("Esta é uma aplicação para gerenciar projetos.")
+        label_descricao.setAlignment(Qt.AlignCenter)  # Alinha ao centro horizontalmente
+        layout.addWidget(label_descricao)
+
+        label_equipe = QLabel("Desenvolvedores : Anderson Demetrio, Lucas Coelho, Leonardo Espinosa")
+        label_equipe.setAlignment(Qt.AlignCenter)
+        layout.addWidget(label_equipe)
+
+        button_fechar = QPushButton("Fechar")
+        button_fechar.clicked.connect(self.fechar_tela)
+        layout.addWidget(button_fechar)
+
+        self.setLayout(layout)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.showFullScreen()
+
+    def fechar_tela(self):
+        self.accept()
+
 
 
 class TelaPrincipal(QDialog):
+
+
     def __init__(self, projeto_controller):
         super().__init__()
-        self.setMinimumSize(500, 900)
+        self.setWindowTitle("Projeto de Gerenciamento")
+        self.setModal(True)
+
+        self.setMinimumSize(600, 800)
 
         self.projeto_controller = projeto_controller
 
-        self.setWindowTitle("Lista de Projetos")
-        self.setModal(True)
 
         self.layout = QVBoxLayout()
 
         self.label_titulo = QLabel("Lista de Projetos")
         self.label_titulo.setObjectName("titulo")
         self.layout.addWidget(self.label_titulo)
+
+        self.setLayout(self.layout)
+
+        self.exibir_tela_boas_vindas()
 
         self.table_widget = QTableWidget()
         self.table_widget.setColumnCount(6)
@@ -256,3 +306,7 @@ class TelaPrincipal(QDialog):
 
     def listar_projetos(self):
         self.carregar_projetos()
+
+    def exibir_tela_boas_vindas(self):
+        self.tela_boas_vindas = TelaBoasVindas()
+        self.tela_boas_vindas.exec()
