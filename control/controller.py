@@ -6,9 +6,10 @@ class ProjetoController:
         self.engine = engine
         self.Session = sessionmaker(bind=self.engine)
 
-    def adicionar_projeto(self, nome, descricao, data_inicio, data_conclusao):
+    def adicionar_projeto(self, nome, descricao, data_inicio, data_conclusao, status):
         session = self.Session()
-        projeto = Projeto(nome=nome, descricao=descricao, data_inicio=data_inicio, data_conclusao=data_conclusao)
+        projeto = Projeto(nome=nome, descricao=descricao, data_inicio=data_inicio, data_conclusao=data_conclusao,
+                          status=status)
         session.add(projeto)
         session.commit()
         session.close()
@@ -51,7 +52,7 @@ class ProjetoController:
         session.close()
         return projeto
 
-    def editar_projeto(self, projeto_id, nome, descricao, data_inicio, data_conclusao):
+    def editar_projeto(self, projeto_id, nome, descricao, data_inicio, data_conclusao, status):
         session = self.Session()
         projeto = session.query(Projeto).get(projeto_id)
         if projeto:
@@ -59,6 +60,7 @@ class ProjetoController:
             projeto.descricao = descricao
             projeto.data_inicio = data_inicio
             projeto.data_conclusao = data_conclusao
+            projeto.status = status
             session.commit()
             session.close()
             return True
