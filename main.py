@@ -3,6 +3,7 @@ from control.controller import ProjetoController
 from view.tela_principal import TelaPrincipal
 from model.Model import engine
 import qdarkstyle
+# Aplicação Principal que integra o MVC inteiro
 
 if __name__ == "__main__":
     # Inicializa a aplicação do Qt

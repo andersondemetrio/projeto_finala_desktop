@@ -1,5 +1,8 @@
 from sqlalchemy.orm import sessionmaker
 from model.Model import Projeto
+#Aqui estão definidos os métods de Commit, Update e Delete do SQL-ALCHMEY
+
+
 
 class ProjetoController:
     def __init__(self, engine):

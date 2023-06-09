@@ -1,12 +1,13 @@
 from datetime import date
-from PySide6.QtCore import Qt, QDate
+from PySide6.QtCore import  QDate
+from PySide6.QtWidgets import QSizePolicy
+from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QDialog, QPushButton
 from PySide6.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
     QHBoxLayout,
-    QLabel,
     QLineEdit,
-    QPushButton,
     QComboBox,
     QTableWidget,
     QTableWidgetItem,
@@ -17,14 +18,15 @@ from PySide6.QtWidgets import (
     QDateEdit,
     QDialogButtonBox,
 )
-from PySide6.QtWidgets import QSizePolicy
 
 
+# Criação de classe específica para os Calendários nas datas.
 class CustomDateEdit(QDateEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setCalendarPopup(True)
 
+# Criação de método específico para a requisição da data
     def setDate(self, date):
         qt_date = QDate(date.year, date.month, date.day)
         super().setDate(qt_date)
@@ -41,17 +43,13 @@ class StatusTableWidgetItem(QTableWidgetItem):
     def __lt__(self, other):
         # Personaliza a ordenação para exibir corretamente o campo de "Status"
         return self.text() < other.text()
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
 
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
-
-from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
+# Tela de Boas Vindas, Widget Inicial
 
 class TelaBoasVindas(QDialog):
     def __init__(self):
         super().__init__()
+
 
         self.setWindowTitle("Boas-vindas")
         self.setModal(True)
@@ -67,7 +65,27 @@ class TelaBoasVindas(QDialog):
         label_descricao.setAlignment(Qt.AlignCenter)  # Alinha ao centro horizontalmente
         layout.addWidget(label_descricao)
 
-        label_equipe = QLabel("Desenvolvedores : Anderson Demetrio, Lucas Coelho, Leonardo Espinosa")
+        # Adicionar imagem centralizada
+        imagem_label = QLabel()
+        imagem_label.setFixedSize(250, 450)
+        imagem_label.setScaledContents(True)
+
+        frame = QFrame()
+        frame.setFrameStyle(QFrame.Box | QFrame.Plain)
+        frame.setLineWidth(1)
+        frame.setMidLineWidth(0)
+        frame.setObjectName("imageFrame")  # Define um nome para o QFrame (opcional)
+        frame.setFixedSize(imagem_label.size())  # Define o tamanho do QFrame com base no tamanho da imagem
+        frame_layout = QVBoxLayout()
+        frame_layout.addWidget(imagem_label)
+        frame.setLayout(frame_layout)
+
+        imagem = QPixmap("C:\\Users\\anderson.placido\\PycharmProjects\\projeto_final_desktop\\teste.jpg")
+        imagem_label.setPixmap(imagem)
+
+        layout.addWidget(frame, alignment=Qt.AlignCenter)
+
+        label_equipe = QLabel("Desenvolvedores: Anderson Demetrio, Lucas Coelho, Leonardo Espinosa")
         label_equipe.setAlignment(Qt.AlignCenter)
         layout.addWidget(label_equipe)
 
@@ -77,10 +95,14 @@ class TelaBoasVindas(QDialog):
 
         self.setLayout(layout)
 
+        # Método Para expandir a tela Inteira, fica em fullscreen
+        self.showFullScreen()
+
+    # Método Para expandir a tela Inteira
     def showEvent(self, event):
         super().showEvent(event)
         self.showFullScreen()
-
+    # método para fechar a tela de boas vindas
     def fechar_tela(self):
         self.accept()
 
@@ -88,13 +110,12 @@ class TelaBoasVindas(QDialog):
 
 class TelaPrincipal(QDialog):
 
-
     def __init__(self, projeto_controller):
         super().__init__()
         self.setWindowTitle("Projeto de Gerenciamento")
         self.setModal(True)
 
-        self.setMinimumSize(600, 800)
+        self.setMinimumSize(850, 900)
 
         self.projeto_controller = projeto_controller
 
@@ -144,6 +165,18 @@ class TelaPrincipal(QDialog):
         self.button_editar.clicked.connect(self.editar_projeto)
         self.button_excluir.clicked.connect(self.excluir_projeto)
         self.button_listar.clicked.connect(self.listar_projetos)
+
+        # Botão de maximizar
+        button_box = QDialogButtonBox(self)
+        button_box.addButton("Maximizar", QDialogButtonBox.ActionRole)
+        button_box.clicked.connect(self.maximizar_janela)
+        self.layout.addWidget(button_box)
+
+    def maximizar_janela(self):
+        if self.isMaximized():
+            self.showNormal()
+        else:
+            self.showMaximized()
 
 
     def carregar_projetos(self):
