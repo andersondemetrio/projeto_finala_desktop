@@ -116,7 +116,7 @@ class TelaPrincipal(QDialog):
         self.setWindowTitle("Projeto de Gerenciamento")
         self.setModal(True)
 
-        self.setMinimumSize(250, 250)
+        self.setMinimumSize(500, 500)
 
         self.projeto_controller = projeto_controller
 
