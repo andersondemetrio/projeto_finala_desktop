@@ -67,7 +67,7 @@ class TelaBoasVindas(QDialog):
 
         # Adicionar imagem centralizada
         imagem_label = QLabel()
-        imagem_label.setFixedSize(250, 450)
+        imagem_label.setFixedSize(250, 250)
         imagem_label.setScaledContents(True)
 
         frame = QFrame()
@@ -115,7 +115,7 @@ class TelaPrincipal(QDialog):
         self.setWindowTitle("Projeto de Gerenciamento")
         self.setModal(True)
 
-        self.setMinimumSize(850, 900)
+        self.setMinimumSize(250, 250)
 
         self.projeto_controller = projeto_controller
 
@@ -180,7 +180,7 @@ class TelaPrincipal(QDialog):
 
 
     def carregar_projetos(self):
-        self.setMinimumSize(1000, 1000)
+        self.setMinimumSize(250, 250)
         projetos = self.projeto_controller.listar_projetos()
 
         self.table_widget.setRowCount(len(projetos))
