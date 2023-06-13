@@ -323,9 +323,12 @@ class TelaPrincipal(QDialog):
             QMessageBox.warning(self, "Erro", "Selecione um projeto para excluir.")
             return
 
+        msg =QMessageBox()
+
         confirm = QMessageBox.question(
             self, "Confirmação", "Tem certeza que deseja excluir o projeto selecionado?", QMessageBox.Yes | QMessageBox.No
         )
+
 
         if confirm == QMessageBox.Yes:
             row = selected_rows[0].row()
