@@ -80,7 +80,7 @@ class TelaBoasVindas(QDialog):
         frame_layout.addWidget(imagem_label)
         frame.setLayout(frame_layout)
 
-        imagem = QPixmap("C:\\Users\\anderson.placido\\PycharmProjects\\projeto_final_desktop\\teste.jpg")
+        imagem = QPixmap("C:\\Users\\lucas.coelho\\OneDrive - SENAC-SC\\3º Fase\\projeto_finala_desktop\\teste.jpg")
         imagem_label.setPixmap(imagem)
 
         layout.addWidget(frame, alignment=Qt.AlignCenter)
@@ -323,11 +323,15 @@ class TelaPrincipal(QDialog):
             QMessageBox.warning(self, "Erro", "Selecione um projeto para excluir.")
             return
 
-        msg =QMessageBox()
+        msg = QMessageBox()
+        msg.setWindowTitle('Remover projeto')
+        msg.setText(f'Este projeto será removido')
+        msg.setInformativeText(f'Você deseja remover o projeto ?')
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.button(QMessageBox.Yes).setText('Sim')
+        msg.button(QMessageBox.No).setText('Não')
+        confirm = msg.exec()
 
-        confirm = QMessageBox.question(
-            self, "Confirmação", "Tem certeza que deseja excluir o projeto selecionado?", QMessageBox.Yes | QMessageBox.No
-        )
 
 
         if confirm == QMessageBox.Yes:
