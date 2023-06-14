@@ -243,6 +243,7 @@ class TelaPrincipal(QDialog):
 
         dialog.exec()
 
+    #Confirmação de integração de projeto
     def confirmar_adicionar_projeto(self, dialog, nome, descricao, data_inicio, data_conclusao, status):
         projeto = self.projeto_controller.adicionar_projeto(nome, descricao, data_inicio, data_conclusao, status)
         dialog.accept()
@@ -255,6 +256,7 @@ class TelaPrincipal(QDialog):
     def editar_projeto(self):
         selected_rows = self.table_widget.selectionModel().selectedRows()
 
+        #Tratamento de exceção caso não seja selecionado um projeto.
         if len(selected_rows) != 1:
             QMessageBox.warning(self, "Erro", "Selecione um projeto para editar.")
             return
@@ -308,6 +310,7 @@ class TelaPrincipal(QDialog):
 
             dialog.exec()
 
+    #Confirmação de atualização de projetos
     def confirmar_editar_projeto(self, dialog, id_projeto, nome, descricao, data_inicio, data_conclusao, status):
         if self.projeto_controller.editar_projeto(id_projeto, nome, descricao, data_inicio, data_conclusao, status):
             dialog.accept()
@@ -319,10 +322,12 @@ class TelaPrincipal(QDialog):
     def excluir_projeto(self):
         selected_rows = self.table_widget.selectionModel().selectedRows()
 
+        #Tratamento de exceção, caso não seja selecionado um projeto
         if len(selected_rows) != 1:
             QMessageBox.warning(self, "Erro", "Selecione um projeto para excluir.")
             return
 
+        #Alteração do idioma de confirmação para exclusão de projetos.
         msg = QMessageBox()
         msg.setWindowTitle('Remover projeto')
         msg.setText(f'Este projeto será removido')
@@ -333,7 +338,7 @@ class TelaPrincipal(QDialog):
         confirm = msg.exec()
 
 
-
+        #Validação para exclusão de projetos
         if confirm == QMessageBox.Yes:
             row = selected_rows[0].row()
             id_projeto = int(self.table_widget.item(row, 0).text())
