@@ -1,5 +1,5 @@
 from datetime import date
-from PySide6.QtCore import QDate
+from PySide6.QtCore import  QDate
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout
@@ -26,7 +26,7 @@ class CustomDateEdit(QDateEdit):
         super().__init__(parent)
         self.setCalendarPopup(True)
 
-    # Criação de método específico para a requisição da data
+# Criação de método específico para a requisição da data
     def setDate(self, date):
         qt_date = QDate(date.year, date.month, date.day)
         super().setDate(qt_date)
@@ -44,12 +44,12 @@ class StatusTableWidgetItem(QTableWidgetItem):
         # Personaliza a ordenação para exibir corretamente o campo de "Status"
         return self.text() < other.text()
 
-
 # Tela de Boas Vindas, Widget Inicial
 
 class TelaBoasVindas(QDialog):
     def __init__(self):
         super().__init__()
+
 
         self.setWindowTitle("Boas-vindas")
         self.setModal(True)
@@ -80,13 +80,12 @@ class TelaBoasVindas(QDialog):
         frame_layout.addWidget(imagem_label)
         frame.setLayout(frame_layout)
 
-        imagem = QPixmap(
-            "C:\\Users\\leonardo.spinosa\\OneDrive - SENAC-SC\\3° Fase\\projeto_finala_desktop\\images\\teste.jpg")
+        imagem = QPixmap("C:\\Users\\lucas.coelho\\OneDrive - SENAC-SC\\3º Fase\\projeto_finala_desktop\\teste.jpg")
         imagem_label.setPixmap(imagem)
 
         layout.addWidget(frame, alignment=Qt.AlignCenter)
 
-        label_equipe = QLabel("Desenvolvedores: Anderson Demetrio, Leonardo Spinosa, Lucas Coelho")
+        label_equipe = QLabel("Desenvolvedores: Anderson Demetrio, Lucas Coelho, Leonardo Espinosa")
         label_equipe.setAlignment(Qt.AlignCenter)
         layout.addWidget(label_equipe)
 
@@ -103,10 +102,10 @@ class TelaBoasVindas(QDialog):
     def showEvent(self, event):
         super().showEvent(event)
         self.showFullScreen()
-
     # método para fechar a tela de boas vindas
     def fechar_tela(self):
         self.accept()
+
 
 
 class TelaPrincipal(QDialog):
@@ -116,9 +115,10 @@ class TelaPrincipal(QDialog):
         self.setWindowTitle("Projeto de Gerenciamento")
         self.setModal(True)
 
-        self.setMinimumSize(500, 500)
+        self.setMinimumSize(250, 250)
 
         self.projeto_controller = projeto_controller
+
 
         self.layout = QVBoxLayout()
 
@@ -158,6 +158,7 @@ class TelaPrincipal(QDialog):
 
         self.layout.addLayout(self.layout_buttons)
 
+
         self.setLayout(self.layout)
 
         self.button_adicionar.clicked.connect(self.adicionar_projeto)
@@ -176,6 +177,7 @@ class TelaPrincipal(QDialog):
             self.showNormal()
         else:
             self.showMaximized()
+
 
     def carregar_projetos(self):
         self.setMinimumSize(250, 250)
@@ -241,6 +243,7 @@ class TelaPrincipal(QDialog):
 
         dialog.exec()
 
+    #Confirmação de integração de projeto
     def confirmar_adicionar_projeto(self, dialog, nome, descricao, data_inicio, data_conclusao, status):
         projeto = self.projeto_controller.adicionar_projeto(nome, descricao, data_inicio, data_conclusao, status)
         dialog.accept()
@@ -253,6 +256,7 @@ class TelaPrincipal(QDialog):
     def editar_projeto(self):
         selected_rows = self.table_widget.selectionModel().selectedRows()
 
+        #Tratamento de exceção caso não seja selecionado um projeto.
         if len(selected_rows) != 1:
             QMessageBox.warning(self, "Erro", "Selecione um projeto para editar.")
             return
@@ -306,6 +310,7 @@ class TelaPrincipal(QDialog):
 
             dialog.exec()
 
+    #Confirmação de atualização de projetos
     def confirmar_editar_projeto(self, dialog, id_projeto, nome, descricao, data_inicio, data_conclusao, status):
         if self.projeto_controller.editar_projeto(id_projeto, nome, descricao, data_inicio, data_conclusao, status):
             dialog.accept()
@@ -317,15 +322,23 @@ class TelaPrincipal(QDialog):
     def excluir_projeto(self):
         selected_rows = self.table_widget.selectionModel().selectedRows()
 
+        #Tratamento de exceção, caso não seja selecionado um projeto
         if len(selected_rows) != 1:
             QMessageBox.warning(self, "Erro", "Selecione um projeto para excluir.")
             return
 
-        confirm = QMessageBox.question(
-            self, "Confirmação", "Tem certeza que deseja excluir o projeto selecionado?",
-            QMessageBox.Yes | QMessageBox.No
-        )
+        #Alteração do idioma de confirmação para exclusão de projetos.
+        msg = QMessageBox()
+        msg.setWindowTitle('Remover projeto')
+        msg.setText(f'Este projeto será removido')
+        msg.setInformativeText(f'Você deseja remover o projeto ?')
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        msg.button(QMessageBox.Yes).setText('Sim')
+        msg.button(QMessageBox.No).setText('Não')
+        confirm = msg.exec()
 
+
+        #Validação para exclusão de projetos
         if confirm == QMessageBox.Yes:
             row = selected_rows[0].row()
             id_projeto = int(self.table_widget.item(row, 0).text())
