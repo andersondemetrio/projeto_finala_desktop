@@ -40,3 +40,6 @@ class Tarefa(Base):
 
 # Criar o banco de dados (se não existir)
 Base.metadata.create_all(engine)
+
+
+
