@@ -1,5 +1,5 @@
 from datetime import date
-from PySide6.QtCore import  QDate
+from PySide6.QtCore import QDate
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout
@@ -26,7 +26,7 @@ class CustomDateEdit(QDateEdit):
         super().__init__(parent)
         self.setCalendarPopup(True)
 
-# Criação de método específico para a requisição da data
+    # Criação de método específico para a requisição da data
     def setDate(self, date):
         qt_date = QDate(date.year, date.month, date.day)
         super().setDate(qt_date)
@@ -44,12 +44,12 @@ class StatusTableWidgetItem(QTableWidgetItem):
         # Personaliza a ordenação para exibir corretamente o campo de "Status"
         return self.text() < other.text()
 
+
 # Tela de Boas Vindas, Widget Inicial
 
 class TelaBoasVindas(QDialog):
     def __init__(self):
         super().__init__()
-
 
         self.setWindowTitle("Boas-vindas")
         self.setModal(True)
@@ -80,12 +80,13 @@ class TelaBoasVindas(QDialog):
         frame_layout.addWidget(imagem_label)
         frame.setLayout(frame_layout)
 
-        imagem = QPixmap("C:\\Users\\lucas.coelho\\OneDrive - SENAC-SC\\3º Fase\\projeto_finala_desktop\\teste.jpg")
+        imagem = QPixmap(
+            "C:\\Users\\leonardo.spinosa\\OneDrive - SENAC-SC\\3° Fase\\projeto_finala_desktop\\images\\teste.jpg")
         imagem_label.setPixmap(imagem)
 
         layout.addWidget(frame, alignment=Qt.AlignCenter)
 
-        label_equipe = QLabel("Desenvolvedores: Anderson Demetrio, Lucas Coelho, Leonardo Espinosa")
+        label_equipe = QLabel("Desenvolvedores: Anderson Demetrio, Leonardo Spinosa, Lucas Coelho")
         label_equipe.setAlignment(Qt.AlignCenter)
         layout.addWidget(label_equipe)
 
@@ -102,10 +103,10 @@ class TelaBoasVindas(QDialog):
     def showEvent(self, event):
         super().showEvent(event)
         self.showFullScreen()
+
     # método para fechar a tela de boas vindas
     def fechar_tela(self):
         self.accept()
-
 
 
 class TelaPrincipal(QDialog):
@@ -115,10 +116,9 @@ class TelaPrincipal(QDialog):
         self.setWindowTitle("Projeto de Gerenciamento")
         self.setModal(True)
 
-        self.setMinimumSize(250, 250)
+        self.setMinimumSize(500, 500)
 
         self.projeto_controller = projeto_controller
-
 
         self.layout = QVBoxLayout()
 
@@ -158,7 +158,6 @@ class TelaPrincipal(QDialog):
 
         self.layout.addLayout(self.layout_buttons)
 
-
         self.setLayout(self.layout)
 
         self.button_adicionar.clicked.connect(self.adicionar_projeto)
@@ -177,7 +176,6 @@ class TelaPrincipal(QDialog):
             self.showNormal()
         else:
             self.showMaximized()
-
 
     def carregar_projetos(self):
         self.setMinimumSize(250, 250)
@@ -323,16 +321,10 @@ class TelaPrincipal(QDialog):
             QMessageBox.warning(self, "Erro", "Selecione um projeto para excluir.")
             return
 
-        msg = QMessageBox()
-        msg.setWindowTitle('Remover projeto')
-        msg.setText(f'Este projeto será removido')
-        msg.setInformativeText(f'Você deseja remover o projeto ?')
-        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-        msg.button(QMessageBox.Yes).setText('Sim')
-        msg.button(QMessageBox.No).setText('Não')
-        confirm = msg.exec()
-
-
+        confirm = QMessageBox.question(
+            self, "Confirmação", "Tem certeza que deseja excluir o projeto selecionado?",
+            QMessageBox.Yes | QMessageBox.No
+        )
 
         if confirm == QMessageBox.Yes:
             row = selected_rows[0].row()
