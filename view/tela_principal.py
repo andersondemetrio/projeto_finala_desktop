@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from PySide6.QtCore import QDate
 from PySide6.QtWidgets import QSizePolicy
 from PySide6.QtGui import QPixmap
@@ -28,12 +28,12 @@ class CustomDateEdit(QDateEdit):
 
     # Criação de método específico para a requisição da data
     def setDate(self, date):
-        qt_date = QDate(date.year, date.month, date.day)
-        super().setDate(qt_date)
+        qt_date = QDate()
+        super().setDate(qt_date.currentDate())
 
     def date(self):
         qt_date = super().date()
-        return date(qt_date.year(), qt_date.month(), qt_date.day())
+        return qt_date.currentDate()
 
 
 class StatusTableWidgetItem(QTableWidgetItem):
@@ -67,7 +67,7 @@ class TelaBoasVindas(QDialog):
 
         # Adicionar imagem centralizada
         imagem_label = QLabel()
-        imagem_label.setFixedSize(250, )
+        imagem_label.setFixedSize(250, 250)
         imagem_label.setScaledContents(True)
 
         frame = QFrame()
@@ -122,6 +122,12 @@ class TelaPrincipal(QDialog):
 
         self.layout = QVBoxLayout()
 
+        # Botão de maximizar
+        button_box = QDialogButtonBox(self)
+        button_box.addButton("Maximizar", QDialogButtonBox.ActionRole)
+        button_box.clicked.connect(self.maximizar_janela)
+        self.layout.addWidget(button_box)
+
         self.label_titulo = QLabel("Lista de Projetos")
         self.label_titulo.setObjectName("titulo")
         self.layout.addWidget(self.label_titulo)
@@ -129,12 +135,6 @@ class TelaPrincipal(QDialog):
         self.setLayout(self.layout)
 
         self.exibir_tela_boas_vindas()
-
-        # Botão de maximizar
-        button_box = QDialogButtonBox(self)
-        button_box.addButton("Maximizar", QDialogButtonBox.ActionRole)
-        button_box.clicked.connect(self.maximizar_janela)
-        self.layout.addWidget(button_box)
 
         self.table_widget = QTableWidget()
         self.table_widget.setColumnCount(6)
@@ -188,6 +188,7 @@ class TelaPrincipal(QDialog):
             nome_item = QTableWidgetItem(projeto.nome)
             descricao_item = QTableWidgetItem(projeto.descricao)
             data_inicio_item = QTableWidgetItem(projeto.data_inicio.strftime("%d/%m/%Y") if projeto.data_inicio else "")
+
             data_conclusao_item = QTableWidgetItem(
                 projeto.data_conclusao.strftime("%d/%m/%Y") if projeto.data_conclusao else "")
             status_item = QTableWidgetItem(projeto.status)
@@ -216,12 +217,16 @@ class TelaPrincipal(QDialog):
         line_edit_descricao = QLineEdit()
         form_layout.addRow(label_descricao, line_edit_descricao)
 
+        data_atual = QDate()
+
         label_data_inicio = QLabel("Data de Início:")
         date_edit_inicio = CustomDateEdit()
+        date_edit_inicio.setDate(data_atual.currentDate())
         form_layout.addRow(label_data_inicio, date_edit_inicio)
 
         label_data_conclusao = QLabel("Data de Conclusão:")
         date_edit_conclusao = CustomDateEdit()
+        date_edit_conclusao.setDate(data_atual.currentDate())
         form_layout.addRow(label_data_conclusao, date_edit_conclusao)
 
         label_status = QLabel("Status:")
@@ -234,7 +239,8 @@ class TelaPrincipal(QDialog):
         button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         button_box.accepted.connect(
             lambda: self.confirmar_adicionar_projeto(dialog, line_edit_nome.text(), line_edit_descricao.text(),
-                                                     date_edit_inicio.date(), date_edit_conclusao.date(),
+                                                     date_edit_inicio.date().toPython(),
+                                                     date_edit_conclusao.date().toPython(),
                                                      status_input.currentText()))
         button_box.rejected.connect(dialog.reject)
         layout.addWidget(button_box)
@@ -300,8 +306,8 @@ class TelaPrincipal(QDialog):
             button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
             button_box.accepted.connect(lambda: self.confirmar_editar_projeto(dialog, id_projeto, line_edit_nome.text(),
                                                                               line_edit_descricao.text(),
-                                                                              date_edit_inicio.date(),
-                                                                              date_edit_conclusao.date(),
+                                                                              date_edit_inicio.date().toPython(),
+                                                                              date_edit_conclusao.date().toPython(),
                                                                               status_input.currentText()))
             button_box.rejected.connect(dialog.reject)
             layout.addWidget(button_box)
