@@ -2,9 +2,38 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Foreign
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
+import sqlalchemy.exc
+import mysql.connector
+
+# Parâmetros de conexão com o banco de dados
+host = 'localhost'
+user = 'root'
+password = 'Senac2021'
+database = 'cliente'
+
+# Criar a conexão com o servidor MySQL
+connection = mysql.connector.connect(
+    host=host,
+    user=user,
+    password=password
+)
+
+# Criar o cursor para executar comandos SQL
+cursor = connection.cursor()
+
+# Criar a database (se não existir)
+try:
+    cursor.execute(f"CREATE DATABASE {database}")
+    print(f"A database '{database}' foi criada com sucesso!")
+except mysql.connector.Error as err:
+    print(f"Erro ao criar a database: {err}")
+
+# Fechar o cursor e a conexão temporariamente
+cursor.close()
+connection.close()
 
 # Criar a conexão com o banco de dados
-engine = create_engine('mysql://root:Senac2021@localhost/cliente')
+engine = create_engine(f'mysql://{user}:{password}@{host}/{database}')
 
 # Criar uma sessão
 Session = sessionmaker(bind=engine)
@@ -39,7 +68,10 @@ class Tarefa(Base):
     projeto = relationship('Projeto', back_populates='tarefas')
 
 # Criar o banco de dados (se não existir)
-Base.metadata.create_all(engine)
+try:
+    Base.metadata.create_all(engine)
+    print("As tabelas foram criadas com sucesso!")
+except sqlalchemy.exc.SQLAlchemyError as err:
+    print(f"Erro ao criar as tabelas: {err}")
 
-
-
+# Restante do código...
