@@ -80,7 +80,7 @@ class TelaBoasVindas(QDialog):
         frame_layout.addWidget(imagem_label)
         frame.setLayout(frame_layout)
 
-        imagem = QPixmap("C:\\Users\\anderson.placido\\PycharmProjects\\projeto_final_desktop\\teste.jpg")
+        imagem = QPixmap("C:\\Users\\anderson.placido\\PycharmProjects\\projeto_final_desktop\\images\\teste.jpg")
 
         imagem_label.setPixmap(imagem)
 

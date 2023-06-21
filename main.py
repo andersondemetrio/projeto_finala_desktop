@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QApplication
 from control.controller import ProjetoController
 from view.tela_principal import TelaPrincipal
 from model.Model import engine
+
 import qdarkstyle
 # Aplicação Principal que integra o MVC inteiro
 
