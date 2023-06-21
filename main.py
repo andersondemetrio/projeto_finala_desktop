@@ -21,4 +21,4 @@ if __name__ == "__main__":
     lista_projetos_view.show()
 
     # Executa o loop de eventos da aplicação
-    app.exec_()
+    app.exec()

@@ -2,9 +2,34 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Foreign
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 from datetime import datetime
+import mysql.connector
 
-# Criar a conexão com o banco de dados
-engine = create_engine('mysql://root:Senac2021@localhost/cliente')
+# Parâmetros de conexão com o banco de dados
+host = 'localhost'
+user = 'root'
+password = 'Senac2021'
+database = 'cliente'
+
+# Criar a conexão com o servidor MySQL
+connection = mysql.connector.connect(
+    host=host,
+    user=user,
+    password=password
+)
+
+# Criar o cursor para executar comandos SQL
+cursor = connection.cursor()
+
+# Criar o banco de dados (se não existir)
+cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database}")
+print(f"A database '{database}' foi criada com sucesso!")
+
+# Fechar o cursor e a conexão temporariamente
+cursor.close()
+connection.close()
+
+# Configurar o engine para incluir o nome do banco de dados
+engine = create_engine(f'mysql+mysqlconnector://{user}:{password}@{host}/{database}')
 
 # Criar uma sessão
 Session = sessionmaker(bind=engine)
@@ -35,8 +60,8 @@ class Tarefa(Base):
     descricao = Column(String(200))
     status = Column(String(20))
 
-    id_projeto = Column(Integer, ForeignKey('projeto.id'))
+    projeto_id = Column(Integer, ForeignKey('projeto.id'))
     projeto = relationship('Projeto', back_populates='tarefas')
 
 # Criar o banco de dados (se não existir)
-Base.metadata.create_all(engine)
+Base.metadata.create_all(engine, checkfirst=True)
