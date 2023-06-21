@@ -18,7 +18,7 @@ from PySide6.QtWidgets import (
     QDateEdit,
     QDialogButtonBox,
 )
-
+from PySide6.QtWidgets import QInputDialog
 
 # Criação de classe específica para os Calendários nas datas.
 class CustomDateEdit(QDateEdit):
@@ -46,7 +46,7 @@ class StatusTableWidgetItem(QTableWidgetItem):
 
 
 # Tela de Boas Vindas, Widget Inicial
-
+# Alterações da Classe principal
 class TelaBoasVindas(QDialog):
     def __init__(self):
         super().__init__()
@@ -80,8 +80,8 @@ class TelaBoasVindas(QDialog):
         frame_layout.addWidget(imagem_label)
         frame.setLayout(frame_layout)
 
-        imagem = QPixmap(
-            "C:\\Users\\leonardo.spinosa\\OneDrive - SENAC-SC\\3° Fase\\projeto_finala_desktop\\images\\teste.jpg")
+        imagem = QPixmap("C:\\Users\\anderson.placido\\PycharmProjects\\projeto_final_desktop\\images\\teste.jpg")
+
         imagem_label.setPixmap(imagem)
 
         layout.addWidget(frame, alignment=Qt.AlignCenter)
@@ -170,6 +170,26 @@ class TelaPrincipal(QDialog):
         self.button_editar.clicked.connect(self.editar_projeto)
         self.button_excluir.clicked.connect(self.excluir_projeto)
         self.button_listar.clicked.connect(self.listar_projetos)
+
+
+        # Tarefas
+        self.table_widget_tarefas = QTableWidget()
+        self.table_widget_tarefas.setColumnCount(3)
+        self.table_widget_tarefas.setHorizontalHeaderLabels(
+            ["ID", "Nome", "Projeto"])
+
+        self.table_widget_tarefas.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_widget_tarefas.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.layout.addWidget(self.table_widget_tarefas)
+
+        self.button_adicionar_tarefa = QPushButton("Adicionar Tarefa")
+        self.layout.addWidget(self.button_adicionar_tarefa)
+        self.button_adicionar_tarefa.clicked.connect(self.adicionar_tarefa)
+
+        self.button_exibir_tarefas = QPushButton("Exibir Tarefas")
+        self.layout_buttons.addWidget(self.button_exibir_tarefas)
+        self.button_exibir_tarefas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.button_exibir_tarefas.clicked.connect(self.exibir_tarefas)
 
     def maximizar_janela(self):
         if self.isMaximized():
@@ -358,3 +378,79 @@ class TelaPrincipal(QDialog):
     def exibir_tela_boas_vindas(self):
         self.tela_boas_vindas = TelaBoasVindas()
         self.tela_boas_vindas.exec()
+
+       #Ações Tarefa
+
+    def exibir_tarefas(self):
+        selected_rows = self.table_widget.selectionModel().selectedRows()
+
+        if len(selected_rows) != 1:
+            QMessageBox.warning(self, "Erro", "Selecione um projeto para exibir as tarefas.")
+            return
+
+        row = selected_rows[0].row()
+        id_projeto = int(self.table_widget.item(row, 0).text())
+
+        # Aqui você deve obter as tarefas do projeto com base no id_projeto
+        tarefas = self.projeto_controller.obter_tarefas_por_projeto(id_projeto)
+
+        self.table_widget_tarefas.setRowCount(len(tarefas))
+
+        for row, tarefa in enumerate(tarefas):
+            id_item = QTableWidgetItem(str(tarefa.id))
+            titulo_item = QTableWidgetItem(tarefa.titulo)
+            projeto_item = QTableWidgetItem(tarefa.projeto.nome)  # Acessar o atributo 'nome' do projeto
+
+            self.table_widget_tarefas.setItem(row, 0, id_item)
+            self.table_widget_tarefas.setItem(row, 1, titulo_item)
+            self.table_widget_tarefas.setItem(row, 2, projeto_item)
+
+        self.button_adicionar_tarefa.setEnabled(True)  # Habilitar o botão para adicionar tarefas
+
+    def adicionar_tarefa(self):
+        selected_rows = self.table_widget.selectionModel().selectedRows()
+
+        if len(selected_rows) != 1:
+            QMessageBox.warning(self, "Erro", "Selecione um projeto para adicionar a tarefa.")
+            return
+
+        row = selected_rows[0].row()
+        id_projeto = int(self.table_widget.item(row, 0).text())
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Adicionar Tarefa")
+        dialog.setModal(True)
+
+        layout = QVBoxLayout(dialog)
+
+        form_layout = QFormLayout()
+
+        label_titulo = QLabel("Título:")
+        line_edit_titulo = QLineEdit()
+        form_layout.addRow(label_titulo, line_edit_titulo)
+
+        label_projeto = QLabel("Projeto:")
+        label_projeto_nome = QLabel(self.table_widget.item(row, 1).text())
+        form_layout.addRow(label_projeto, label_projeto_nome)
+
+        layout.addLayout(form_layout)
+
+        button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        button_box.accepted.connect(
+            lambda: self.confirmar_adicionar_tarefa(dialog, id_projeto, line_edit_titulo.text()))
+        button_box.rejected.connect(dialog.reject)
+        layout.addWidget(button_box)
+
+        dialog.exec()
+
+    def confirmar_adicionar_tarefa(self, dialog, id_projeto, titulo):
+        descricao, ok = QInputDialog.getText(self, "Descrição da Tarefa", "Digite a descrição da tarefa:")
+        if ok:
+            tarefa = self.projeto_controller.adicionar_tarefa(id_projeto, titulo, descricao)
+            dialog.accept()
+            if tarefa:
+                QMessageBox.information(self, "Sucesso", "Tarefa adicionada com sucesso.")
+                self.exibir_tarefas()
+            else:
+                QMessageBox.warning(self, "Erro", "Falha ao adicionar tarefa.")
+
