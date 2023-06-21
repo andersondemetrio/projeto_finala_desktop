@@ -15,6 +15,7 @@ if __name__ == "__main__":
     # Cria uma instância do controlador de projetos
     projeto_controller = ProjetoController(engine)
 
+
     # Cria a tela principal e passa o controlador como argumento
     lista_projetos_view = TelaPrincipal(projeto_controller)
 

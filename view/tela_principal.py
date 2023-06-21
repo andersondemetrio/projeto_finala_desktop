@@ -46,7 +46,7 @@ class StatusTableWidgetItem(QTableWidgetItem):
 
 
 # Tela de Boas Vindas, Widget Inicial
-
+# Alterações da Classe principal
 class TelaBoasVindas(QDialog):
     def __init__(self):
         super().__init__()
