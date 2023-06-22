@@ -16,7 +16,7 @@ from PySide6.QtWidgets import (
     QFormLayout,
     QMessageBox,
     QDateEdit,
-    QDialogButtonBox,
+    QDialogButtonBox, QWidget
 )
 from PySide6.QtWidgets import QInputDialog
 
@@ -54,18 +54,21 @@ class TelaBoasVindas(QDialog):
         self.setWindowTitle("Boas-vindas")
         self.setModal(True)
 
-        layout = QVBoxLayout()
+        main_layout = QVBoxLayout()
+        main_layout.setAlignment(Qt.AlignCenter)  # Align the main layout to the center
 
         label_titulo = QLabel("Bem-vindo(a) à aplicação de Projetos!")
         label_titulo.setObjectName("titulo")
-        label_titulo.setAlignment(Qt.AlignCenter)  # Alinha ao centro horizontalmente
-        layout.addWidget(label_titulo)
+        label_titulo.setAlignment(Qt.AlignCenter)
+        main_layout.addWidget(label_titulo)
 
         label_descricao = QLabel("Esta é uma aplicação para gerenciar projetos.")
-        label_descricao.setAlignment(Qt.AlignCenter)  # Alinha ao centro horizontalmente
-        layout.addWidget(label_descricao)
+        label_descricao.setAlignment(Qt.AlignCenter)
+        main_layout.addWidget(label_descricao)
 
-        # Adicionar imagem centralizada
+        image_layout = QHBoxLayout()
+        image_layout.setAlignment(Qt.AlignCenter)  # Align the image layout to the center
+
         imagem_label = QLabel()
         imagem_label.setFixedSize(250, 250)
         imagem_label.setScaledContents(True)
@@ -74,40 +77,66 @@ class TelaBoasVindas(QDialog):
         frame.setFrameStyle(QFrame.Box | QFrame.Plain)
         frame.setLineWidth(1)
         frame.setMidLineWidth(0)
-        frame.setObjectName("imageFrame")  # Define um nome para o QFrame (opcional)
-        frame.setFixedSize(imagem_label.size())  # Define o tamanho do QFrame com base no tamanho da imagem
+        frame.setObjectName("imageFrame")
+        frame.setFixedSize(imagem_label.size())
         frame_layout = QVBoxLayout()
         frame_layout.addWidget(imagem_label)
         frame.setLayout(frame_layout)
 
         imagem = QPixmap("C:\\Users\\anderson.placido\\PycharmProjects\\projeto_final_desktop\\images\\teste.jpg")
-
         imagem_label.setPixmap(imagem)
 
-        layout.addWidget(frame, alignment=Qt.AlignCenter)
+        image_layout.addWidget(frame)
 
-        label_equipe = QLabel("Desenvolvedores: Anderson Demetrio, Lucas Coelho, Leonardo Spinosa")
-        label_equipe.setAlignment(Qt.AlignCenter)
-        layout.addWidget(label_equipe)
+        main_layout.addLayout(image_layout)
+
+
+        username_widget = QWidget()  # Widget for the username field
+        username_layout = QVBoxLayout()
+        username_layout.setAlignment(Qt.AlignCenter)  # Align the username layout to the center
+
+        username_label = QLabel("Usuário:")
+        username_label.setAlignment(Qt.AlignCenter)  # Align the label text to the center
+        username_layout.addWidget(username_label)
+
+        self.username_field = QLineEdit()
+        self.username_field.setAlignment(Qt.AlignCenter)  # Align the input text to the center
+        username_layout.addWidget(self.username_field)
+
+        username_widget.setLayout(username_layout)
+        main_layout.addWidget(username_widget)
+
+        # Password field
+        password_label = QLabel("Senha:")
+        password_label.setAlignment(Qt.AlignCenter)  # Align the label text to the center
+        main_layout.addWidget(password_label)
+
+        self.password_field = QLineEdit()
+        self.password_field.setEchoMode(QLineEdit.Password)
+        self.password_field.setAlignment(Qt.AlignCenter)  # Align the input text to the center
+        main_layout.addWidget(self.password_field)
 
         button_fechar = QPushButton("Fechar")
         button_fechar.clicked.connect(self.fechar_tela)
-        layout.addWidget(button_fechar)
+        main_layout.addWidget(button_fechar)
 
-        self.setLayout(layout)
-
-        # Método Para expandir a tela Inteira, fica em fullscreen
+        self.setLayout(main_layout)
         self.showFullScreen()
 
-    # Método Para expandir a tela Inteira
+        label_equipe = QLabel("Desenvolvedores: Anderson Demetrio, Lucas Coelho, Leonardo Spinosa")
+        label_equipe.setAlignment(Qt.AlignCenter)
+        main_layout.addWidget(label_equipe)
+
     def showEvent(self, event):
         super().showEvent(event)
         self.showFullScreen()
 
-    # método para fechar a tela de boas vindas
     def fechar_tela(self):
-        self.accept()
-
+        if self.username_field.text() == "admin" and self.password_field.text() == "admin":
+            self.accept()
+        else:
+            # Add code here for handling incorrect credentials
+            print("Incorrect username or password!")
 
 class TelaPrincipal(QDialog):
 
