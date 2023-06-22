@@ -59,3 +59,27 @@ ou clone o repositório usando o comando git clone link_repositório
 pip install -r requirements.txt
 
 
+# DER
+# Diagrama Entidade-Relacionamento
+
+## Tabelas
+
+### Projeto
+
+- ID (chave primária)
+- Nome
+- Descrição
+- Data Início
+- Data Conclusão
+- Status
+
+### Tarefa
+
+- ID (chave primária)
+- Título
+- Descrição
+- Status
+- Projeto_ID (chave estrangeira, referenciando Projeto.ID)
+
+
+
