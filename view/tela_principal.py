@@ -95,7 +95,7 @@ class TelaBoasVindas(QDialog):
         main_layout.addLayout(image_layout)
 
 
-        username_widget = QWidget()  # Widget for the username field
+        username_widget = QWidget()  # Widget for the username
         username_layout = QVBoxLayout()
         username_layout.setAlignment(Qt.AlignCenter)  # Align the username layout to the center
 
