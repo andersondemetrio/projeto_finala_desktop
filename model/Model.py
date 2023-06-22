@@ -60,8 +60,8 @@ class Tarefa(Base):
     descricao = Column(String(200))
     status = Column(String(20))
 
+    # Criar o banco de dados (se não existir)
     projeto_id = Column(Integer, ForeignKey('projeto.id'))
     projeto = relationship('Projeto', back_populates='tarefas')
 
-# Criar o banco de dados (se não existir)
 Base.metadata.create_all(engine, checkfirst=True)

@@ -8,6 +8,7 @@ class ProjetoController:
     def __init__(self, engine):
         self.engine = engine
         self.Session = sessionmaker(bind=self.engine)
+
         self.projetos = []
         self.tarefas = []
 
@@ -73,11 +74,11 @@ class ProjetoController:
             session.close()
             return False
 
-    def adicionar_tarefa(self, projeto_id, titulo, descricao):
+    def adicionar_tarefa(self, projeto_id, titulo, descricao, status):
         session = self.Session()
         projeto = session.query(Projeto).get(projeto_id)
         if projeto:
-            tarefa = Tarefa(titulo=titulo, descricao=descricao)
+            tarefa = Tarefa(titulo=titulo, descricao=descricao, status=status)
             projeto.tarefas.append(tarefa)
             self.tarefas.append(tarefa)  # Adicionar a tarefa à lista do controlador
             session.commit()
@@ -90,11 +91,62 @@ class ProjetoController:
     def obter_tarefas_por_projeto(self, id_projeto):
         session = self.Session()
         projeto = session.query(Projeto).get(id_projeto)
-        if projeto:
-            tarefas = projeto.tarefas
-        else:
-            tarefas = []
-        tarefas = session.query(Tarefa).filter(Tarefa.projeto_id == id_projeto).options(joinedload(Tarefa.projeto)).all()
 
+        if projeto is None:
+            session.close()
+            return []
+
+        tarefas = session.query(Tarefa).filter(Tarefa.projeto_id == id_projeto).options(
+            joinedload(Tarefa.projeto)).all()
         session.close()
+
         return tarefas
+
+    def editar_tarefa(self, tarefa_id, titulo, descricao, status, projeto_id):
+        session = self.Session()
+        tarefa = session.query(Tarefa).get(tarefa_id)
+
+        if tarefa:
+            tarefa.titulo = titulo
+            tarefa.descricao = descricao
+            tarefa.status = status  # Atualizar o campo status da tarefa
+
+            projeto = session.query(Projeto).get(projeto_id)
+            if projeto:
+                tarefa.projeto = projeto
+            else:
+                tarefa.projeto = None
+
+            session.commit()
+            session.close()
+            return True
+        else:
+            session.close()
+            return False
+    def excluir_tarefa(self, id):
+        session = self.Session()
+        tarefa = session.query(Tarefa).get(id)
+        if tarefa:
+            session.delete(tarefa)
+
+            session.commit()
+        session.close()
+
+        return tarefa
+
+    def get_tarefa(self, tarefa_id):
+        session = self.Session()
+        tarefa = session.query(Tarefa).get(tarefa_id)
+        session.close()
+        return tarefa
+
+    def buscar_tarefa_por_id(self, id_tarefa):
+        session = self.Session()
+        tarefa = session.query(Tarefa).get(id_tarefa)
+        session.close()
+        return tarefa
+
+
+
+
+
