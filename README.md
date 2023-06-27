@@ -33,7 +33,7 @@ Mostra as informações detalhadas de um projeto selecionado.
 Permite a edição, exclusão e gerenciamento das tarefas associadas ao projeto.
 
 
-# Para realizar a instalação realize a instalação dos requisitos
+# Para realizar a instalação configure os passoas abaixo e siga os requisitos
 
 Tenha o docker, dbeaver em sua estação.
 
