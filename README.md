@@ -1,5 +1,7 @@
 # Trabalho Final da Disciplina Desenvolvimento Desktop
 # Criação de um Sistema de Gestão de Projetos
+# Equipe de Desenvolvedores
+# Anderson Demetrio, Lucas Coelho, Leonardo Spinosa
 O objetivo deste trabalho é desenvolver um sistema de gestão de projetos que permita a realização das operações CRUD (Create, Read, Update, Delete) e a definição do status de cada projeto.
 Exercício 5: Sistema de Gerenciamento de Projetos
 Requisitos Funcionais:
